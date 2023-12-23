@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dataservice;
+
+// DataService
+service DataService {
+    // Ingest raw data from raw-datasets-uploads bucket and transforms them to parquet in datasets bucket
+    rpc IngestData(IngestDataCommand) returns (IngestDataCommandResponse) {}
+}
+
+message IngestDataCommand {
+    string datasetId = 1;
+    string fileName = 2;
+}
+
+message IngestDataCommandResponse {
+    bool success = 1;
+}
