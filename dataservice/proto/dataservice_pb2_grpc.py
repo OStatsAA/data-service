@@ -17,8 +17,8 @@ class DataServiceStub(object):
         """
         self.IngestData = channel.unary_unary(
                 '/dataservice.DataService/IngestData',
-                request_serializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataCommand.SerializeToString,
-                response_deserializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataCommandResponse.FromString,
+                request_serializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataRequest.SerializeToString,
+                response_deserializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataResponse.FromString,
                 )
 
 
@@ -38,8 +38,8 @@ def add_DataServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'IngestData': grpc.unary_unary_rpc_method_handler(
                     servicer.IngestData,
-                    request_deserializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataCommand.FromString,
-                    response_serializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataCommandResponse.SerializeToString,
+                    request_deserializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataRequest.FromString,
+                    response_serializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -64,7 +64,7 @@ class DataService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/dataservice.DataService/IngestData',
-            dataservice_dot_proto_dot_dataservice__pb2.IngestDataCommand.SerializeToString,
-            dataservice_dot_proto_dot_dataservice__pb2.IngestDataCommandResponse.FromString,
+            dataservice_dot_proto_dot_dataservice__pb2.IngestDataRequest.SerializeToString,
+            dataservice_dot_proto_dot_dataservice__pb2.IngestDataResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

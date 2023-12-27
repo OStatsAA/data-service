@@ -11,8 +11,8 @@ from pyarrow import csv
 from pyarrow import feather
 
 from dataservice.proto.dataservice_pb2 import (
-    IngestDataCommand,
-    IngestDataCommandResponse,
+    IngestDataRequest,
+    IngestDataResponse,
 )
 from dataservice.proto.dataservice_pb2_grpc import DataServiceServicer
 
@@ -26,21 +26,22 @@ _s3 = boto3.client(
     region_name="auto",
 )
 
+_DATASETS_BUCKET = "datasets"
+
 
 class DataService(DataServiceServicer):
-    def IngestData(
-        self, request: IngestDataCommand, context
-    ) -> IngestDataCommandResponse:
+    def IngestData(self, request: IngestDataRequest, context) -> IngestDataResponse:
         self._log_ingest_data_command(request)
-        response = IngestDataCommandResponse()
+        response = IngestDataResponse()
         source_key = request.fileName
+        bucket = request.bucket
         destination_key = request.datasetId
         temp_path = f".temp/{destination_key}.arrow"
-        object_ = _s3.get_object(Bucket="raw-datasets-uploads", Key=source_key)
+        object_ = _s3.get_object(Bucket=bucket, Key=source_key)
         data = csv.read_csv(object_["Body"])
         try:
             feather.write_feather(data, temp_path, "uncompressed")
-            _s3.upload_file(temp_path, "datasets", destination_key)
+            _s3.upload_file(temp_path, _DATASETS_BUCKET, destination_key)
         except Exception as e:  # pylint: disable=broad-exception-caught
             logging.log(logging.ERROR, e)
             response.success = False
@@ -56,14 +57,8 @@ class DataService(DataServiceServicer):
         logging.basicConfig(level=logging.INFO)
         logging.log(
             logging.INFO,
-            "Received IngestDataCommand - datasetId:%s, fileName:%s",
+            "Received IngestDataCommand - datasetId: %s, bucket: %s, fileName: %s",
             request.datasetId,
+            request.bucket,
             request.fileName,
         )
-
-
-if __name__ == "__main__":
-    test = DataService()
-    test.IngestData(
-        IngestDataCommand(datasetId="[123-123]", fileName="action_info_log.csv"), {}
-    )

@@ -5,14 +5,15 @@ package dataservice;
 // DataService
 service DataService {
     // Ingest raw data from raw-datasets-uploads bucket and transforms them to parquet in datasets bucket
-    rpc IngestData(IngestDataCommand) returns (IngestDataCommandResponse) {}
+    rpc IngestData(IngestDataRequest) returns (IngestDataResponse) {}
 }
 
-message IngestDataCommand {
+message IngestDataRequest {
     string datasetId = 1;
-    string fileName = 2;
+    string bucket = 2;
+    string fileName = 3;
 }
 
-message IngestDataCommandResponse {
+message IngestDataResponse {
     bool success = 1;
 }
