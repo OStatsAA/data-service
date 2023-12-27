@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 
 import grpc
 from dataservice.proto.dataservice_pb2_grpc import add_DataServiceServicer_to_server
@@ -19,4 +20,6 @@ async def serve() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
+    if not os.path.exists('.temp/'):
+        os.mkdir('.temp/')
     asyncio.run(serve())
