@@ -1,5 +1,5 @@
 # The builder image, used to build the virtual environment
-FROM python:3.12-bookworm as build
+FROM python:3.11-bookworm as build
 
 RUN pip install poetry
 
@@ -25,7 +25,7 @@ COPY tests ./tests
 RUN poetry run pytest
 
 # The runtime image, used to just run the code provided its virtual environment
-FROM python:3.12-slim-bookworm as runtime
+FROM python:3.11-slim-bookworm as runtime
 
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
