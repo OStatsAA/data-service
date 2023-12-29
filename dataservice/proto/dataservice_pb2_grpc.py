@@ -20,6 +20,11 @@ class DataServiceStub(object):
                 request_serializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataRequest.SerializeToString,
                 response_deserializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataResponse.FromString,
                 )
+        self.GetData = channel.unary_stream(
+                '/dataservice.DataService/GetData',
+                request_serializer=dataservice_dot_proto_dot_dataservice__pb2.GetDataRequest.SerializeToString,
+                response_deserializer=dataservice_dot_proto_dot_dataservice__pb2.FlightData.FromString,
+                )
 
 
 class DataServiceServicer(object):
@@ -33,6 +38,12 @@ class DataServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetData(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_DataServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -40,6 +51,11 @@ def add_DataServiceServicer_to_server(servicer, server):
                     servicer.IngestData,
                     request_deserializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataRequest.FromString,
                     response_serializer=dataservice_dot_proto_dot_dataservice__pb2.IngestDataResponse.SerializeToString,
+            ),
+            'GetData': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetData,
+                    request_deserializer=dataservice_dot_proto_dot_dataservice__pb2.GetDataRequest.FromString,
+                    response_serializer=dataservice_dot_proto_dot_dataservice__pb2.FlightData.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -66,5 +82,22 @@ class DataService(object):
         return grpc.experimental.unary_unary(request, target, '/dataservice.DataService/IngestData',
             dataservice_dot_proto_dot_dataservice__pb2.IngestDataRequest.SerializeToString,
             dataservice_dot_proto_dot_dataservice__pb2.IngestDataResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/dataservice.DataService/GetData',
+            dataservice_dot_proto_dot_dataservice__pb2.GetDataRequest.SerializeToString,
+            dataservice_dot_proto_dot_dataservice__pb2.FlightData.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
