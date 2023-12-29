@@ -54,7 +54,7 @@ class DataService(DataServiceServicer):
     def GetData(self, request: GetDataRequest, context) -> FlightData:
         self._log_get_data_command(request)
         query = request.query if request.query else "SELECT * FROM data"
-        data = dataset.dataset(f".temp/{request.datasetId}", format="arrow")
+        data = dataset.dataset(f".temp/{request.datasetId}.arrow", format="arrow")
         con = duckdb.connect()
         table = con.execute(query).arrow()
         logging.log(logging.INFO, "Built table: %s", str(table.schema))
