@@ -23,7 +23,7 @@ class DataServiceStub(object):
         self.GetData = channel.unary_stream(
                 '/dataservice.DataService/GetData',
                 request_serializer=dataservice_dot_proto_dot_dataservice__pb2.GetDataRequest.SerializeToString,
-                response_deserializer=dataservice_dot_proto_dot_dataservice__pb2.FlightData.FromString,
+                response_deserializer=dataservice_dot_proto_dot_dataservice__pb2.DataResponse.FromString,
                 )
 
 
@@ -55,7 +55,7 @@ def add_DataServiceServicer_to_server(servicer, server):
             'GetData': grpc.unary_stream_rpc_method_handler(
                     servicer.GetData,
                     request_deserializer=dataservice_dot_proto_dot_dataservice__pb2.GetDataRequest.FromString,
-                    response_serializer=dataservice_dot_proto_dot_dataservice__pb2.FlightData.SerializeToString,
+                    response_serializer=dataservice_dot_proto_dot_dataservice__pb2.DataResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -98,6 +98,6 @@ class DataService(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/dataservice.DataService/GetData',
             dataservice_dot_proto_dot_dataservice__pb2.GetDataRequest.SerializeToString,
-            dataservice_dot_proto_dot_dataservice__pb2.FlightData.FromString,
+            dataservice_dot_proto_dot_dataservice__pb2.DataResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

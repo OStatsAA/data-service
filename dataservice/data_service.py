@@ -2,6 +2,7 @@
 DataService module
 """
 
+import json
 import logging
 import os
 from dotenv import load_dotenv
@@ -9,9 +10,10 @@ from dotenv import load_dotenv
 import boto3
 import duckdb
 from pyarrow import csv, feather, dataset, flight
+import pyarrow as pa
 
 from dataservice.proto.dataservice_pb2 import (
-    FlightData,
+    DataResponse,
     GetDataRequest,
     IngestDataRequest,
     IngestDataResponse,
@@ -51,14 +53,16 @@ class DataService(DataServiceServicer):
 
         return response
 
-    def GetData(self, request: GetDataRequest, context) -> FlightData:
+    def GetData(self, request: GetDataRequest, context):
         self._log_get_data_command(request)
         query = request.query if request.query else "SELECT * FROM data"
         data = dataset.dataset(f".temp/{request.datasetId}.arrow", format="arrow")
         con = duckdb.connect()
         table = con.execute(query).arrow()
         logging.log(logging.INFO, "Built table: %s", str(table.schema))
-        return flight.RecordBatchStream(table)
+        for batch in table.to_batches(max_chunksize=1000):
+            d = batch.to_pylist()
+            yield DataResponse(body=json.dumps(d))
 
     def _log_ingest_data_command(self, request: IngestDataRequest):
         logging.basicConfig(level=logging.INFO)

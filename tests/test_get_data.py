@@ -1,5 +1,5 @@
 from concurrent import futures
-
+import json
 import grpc
 import pytest
 from dataservice.data_service import DataService
@@ -26,6 +26,6 @@ def stub():
     request: pb2.GetDataRequest = pb2.GetDataRequest(
         datasetId="1ed87fda-7499-4f0a-aa94-680e73228d30", query=""
     )
-    response = stub.GetData(request)
-    while not response.done():
-            assert response """
+    for response in stub.GetData(request):
+        assert isinstance(json.loads(response.body), list)
+ """
