@@ -30,31 +30,34 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"ms-python.vscode-pylance",
+				"ms-azuretools.vscode-docker",
+				"GitHub.github-vscode-theme",
 				"peterj.proto",
 				"njpwerner.autodocstring",
 				"ms-python.pylint",
 				"ms-python.black-formatter",
 				"Boto3typed.boto3-ide",
-				"ms-python.vscode-pylance",
-				"ms-azuretools.vscode-docker",
-				"GitHub.vscode-github-actions",
-				"GitHub.github-vscode-theme"
-			]
+				"GitHub.vscode-github-actions"
+			],
+			"settings": {
+				"python.analysis.autoImportCompletions": true,
+				"python.analysis.typeCheckingMode": "basic",
+				"pylint.importStrategy": "fromEnvironment",
+				"python.testing.pytestArgs": [
+					"tests"
+				],
+				"python.testing.unittestEnabled": false,
+				"python.testing.pytestEnabled": true
+			}
 		}
-	}
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
-
+	"postCreateCommand": "poetry install; source .venv/bin/activate"
 	// Configure tool-specific properties.
 	// "customizations": {},
-
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
 }
