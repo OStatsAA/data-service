@@ -2,6 +2,7 @@
 DataService module
 """
 
+from datetime import datetime
 import json
 import logging
 import os
@@ -9,8 +10,8 @@ from dotenv import load_dotenv
 
 import boto3
 import duckdb
-from pyarrow import csv, feather, dataset, flight
-import pyarrow as pa
+from grpc import ServicerContext
+from pyarrow import csv, feather, dataset
 
 from dataservice.proto.dataservice_pb2 import (
     DataResponse,
@@ -34,7 +35,7 @@ _DATASETS_BUCKET = "datasets"
 
 
 class DataService(DataServiceServicer):
-    def IngestData(self, request: IngestDataRequest, context) -> IngestDataResponse:
+    def IngestData(self, request: IngestDataRequest, context: ServicerContext) -> IngestDataResponse:
         self._log_ingest_data_command(request)
         response = IngestDataResponse()
         bucket = request.bucket
@@ -57,6 +58,7 @@ class DataService(DataServiceServicer):
         self._log_get_data_command(request)
         query = request.query if request.query else "SELECT * FROM data"
         data = dataset.dataset(f".temp/{request.datasetId}.arrow", format="arrow")
+        logging.log(logging.INFO, "Loaded dataset")
         con = duckdb.connect()
         table = con.execute(query).arrow()
         logging.log(logging.INFO, "Built table: %s", str(table.schema))
@@ -68,7 +70,8 @@ class DataService(DataServiceServicer):
         logging.basicConfig(level=logging.INFO)
         logging.log(
             logging.INFO,
-            "Received IngestDataRequest - datasetId: %s, bucket: %s, fileName: %s",
+            "%s: Received IngestDataRequest - datasetId: %s, bucket: %s, fileName: %s",
+            str(datetime.now()),
             request.datasetId,
             request.bucket,
             request.fileName,
@@ -78,15 +81,8 @@ class DataService(DataServiceServicer):
         logging.basicConfig(level=logging.INFO)
         logging.log(
             logging.INFO,
-            "Received GetDataRequest - datasetId: %s, bucket: %s",
+            "%s: Received GetDataRequest - datasetId: %s, bucket: %s",
+            str(datetime.now()),
             request.datasetId,
             request.query,
         )
-
-
-if __name__ == "__main__":
-    test = DataService()
-    test.GetData(
-        GetDataRequest(datasetId="1ed87fda-7499-4f0a-aa94-680e73228d30", query=""),
-        {},
-    )
