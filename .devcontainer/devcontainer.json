@@ -38,9 +38,11 @@
 				"ms-python.pylint",
 				"ms-python.black-formatter",
 				"Boto3typed.boto3-ide",
-				"GitHub.vscode-github-actions"
+				"GitHub.vscode-github-actions",
+				"GitHub.copilot"
 			],
 			"settings": {
+				"python.analysis.autoSearchPaths": true,
 				"python.analysis.autoImportCompletions": true,
 				"python.analysis.typeCheckingMode": "basic",
 				"pylint.importStrategy": "fromEnvironment",
