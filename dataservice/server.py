@@ -1,10 +1,14 @@
+"""
+Server module
+"""
+
 import asyncio
 import logging
 import os
 
 import grpc
 from dataservice.proto.dataservice_pb2_grpc import add_DataServiceServicer_to_server
-from dataservice.data_service import DataService
+from dataservice.data_service import DataService, _DATASETS_PATH
 
 
 async def serve() -> None:
@@ -20,6 +24,6 @@ async def serve() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    if not os.path.exists('.temp/'):
-        os.mkdir('.temp/')
+    if not os.path.exists(f'{_DATASETS_PATH}/'):
+        os.mkdir(f'{_DATASETS_PATH}/')
     asyncio.run(serve())

@@ -32,6 +32,7 @@ _s3 = boto3.client(
 )
 
 _DATASETS_BUCKET = "datasets"
+_DATASETS_PATH = "/datasets"
 
 
 class DataService(DataServiceServicer):
@@ -40,7 +41,7 @@ class DataService(DataServiceServicer):
         response = IngestDataResponse()
         bucket = request.bucket
         destination_key = request.datasetId
-        path = f".temp/{destination_key}.arrow"
+        path = f"{_DATASETS_PATH}/{destination_key}.arrow"
         object_ = _s3.get_object(Bucket=bucket, Key=request.fileName)
         data = csv.read_csv(object_["Body"])
         try:
@@ -57,7 +58,7 @@ class DataService(DataServiceServicer):
     def GetData(self, request: GetDataRequest, context):
         self._log_get_data_command(request)
         query = request.query if request.query else "SELECT * FROM data"
-        data = dataset.dataset(f".temp/{request.datasetId}.arrow", format="arrow")
+        data = dataset.dataset(f"{_DATASETS_PATH}/{request.datasetId}.arrow", format="arrow")
         logging.log(logging.INFO, "Loaded dataset")
         con = duckdb.connect()
         table = con.execute(query).arrow()
