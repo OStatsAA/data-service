@@ -52,6 +52,7 @@ class DataService(DataServiceServicer):
             response.success = False
         else:
             response.success = True
+            _s3.delete_object(Bucket=bucket, Key=request.fileName)
 
         return response
 
