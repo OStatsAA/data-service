@@ -40,6 +40,7 @@ relative_files = true
 branch = true
 command_line = "-m pytest"
 source = ["dataservice"]
+omit = ["dataservice/proto/*"] # omit generated files
 
 [tool.coverage.report]
 show_missing = true
