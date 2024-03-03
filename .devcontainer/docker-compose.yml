@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  dataservice:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    
+    environment:
+      ENVIRONMENT: "DEVELOPMENT"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
+      AWS_SECRET: "test"
+    
+    volumes:
+      - ../..:/workspaces:cached
+    
+    command: sleep infinity
+  
+  s3:
+    image: localstack/localstack:s3-latest
+    ports:
+      - "4566:4566"
+    environment:
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
+      AWS_DEFAULT_REGION: "us-east-2"
