@@ -18,6 +18,7 @@ class Config(TypedDict):
 
     # Server configuration
     LISTEN_ADDR: str
+    TERMINATION_TIMEOUT: float | None
 
 
 DEFAULT_CONFIG = Config(
@@ -31,12 +32,23 @@ DEFAULT_CONFIG = Config(
     DATASETS_BUCKET="datasets",
     DATASETS_DIR="/datasets",
     LISTEN_ADDR="[::]:50051",
+    TERMINATION_TIMEOUT=None,
 )
 
-TESTING_CONFIG: Config = {**DEFAULT_CONFIG, "DATASETS_DIR": ".temp_datasets"}
+TESTING_CONFIG: Config = {
+    **DEFAULT_CONFIG,
+    "S3_CLIENT_KWARGS": {
+        "service_name": "s3",
+        "endpoint_url": "http://s3:4566",
+        "aws_access_key_id": "test",
+        "aws_secret_access_key": "test",
+        "region_name": "auto",
+    },
+    "DATASETS_DIR": ".temp_datasets",
+    "TERMINATION_TIMEOUT": 10}
 
 
-def get_config(config_type: str = "DEFAULT") -> Config:
+def get_config(config_type: str) -> Config:
     """Get configuration by type"""
     config_selector = {
         "DEVELOPMENT": TESTING_CONFIG,

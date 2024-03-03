@@ -20,7 +20,7 @@ async def serve(config: Config) -> None:
     server.add_insecure_port(listen_addr)
     logging.info("Starting server on %s", listen_addr)
     await server.start()
-    await server.wait_for_termination()
+    await server.wait_for_termination(config["TERMINATION_TIMEOUT"])
 
 
 if __name__ == "__main__":
