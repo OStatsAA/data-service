@@ -12,12 +12,14 @@ from grpc import ServicerContext
 from pyarrow import csv, feather, dataset
 from dataservice.config import Config
 
+# pylint: disable=no-name-in-module
 from dataservice.proto.dataservice_pb2 import (
     DataResponse,
     GetDataRequest,
     IngestDataRequest,
     IngestDataResponse,
 )
+# pylint: enable=no-name-in-module
 from dataservice.proto.dataservice_pb2_grpc import DataServiceServicer
 
 
