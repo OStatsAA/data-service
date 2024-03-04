@@ -26,7 +26,7 @@ def stub():
     """
     config = TESTING_CONFIG
     if not os.path.exists(f"{config['DATASETS_DIR']}/"):
-        os.makedirs(f"{config['DATASETS_DIR']}/")
+        os.makedirs(f"{config['DATASETS_DIR']}/", exist_ok=True)
 
     dataset_path = f"{config['DATASETS_DIR']}/server_testing_dataset.arrow"
     test_dataset_path = "tests/assets/test_dataset.arrow"

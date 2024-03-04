@@ -31,6 +31,8 @@ class TestGetData(unittest.TestCase):
         """
         source_file = "tests/assets/test_dataset.arrow"
         destination_dir = ".temp_datasets"
+        if not os.path.exists(destination_dir):
+            os.makedirs(destination_dir, exist_ok=True)
         shutil.copy(source_file, destination_dir)
 
     def tearDown(self):
