@@ -40,7 +40,7 @@ class TestIngestingData(unittest.TestCase):
         }
 
         if not os.path.exists(f"{self.config['DATASETS_DIR']}/"):
-            os.makedirs(f"{self.config['DATASETS_DIR']}/")
+            os.makedirs(f"{self.config['DATASETS_DIR']}/", exist_ok=True)
 
     def tearDown(self):
         """
