@@ -5,6 +5,7 @@ DataService module
 from datetime import datetime
 import json
 import logging
+import os
 
 import boto3
 import duckdb
@@ -15,6 +16,7 @@ from dataservice.config import Config
 # pylint: disable=no-name-in-module
 from dataservice.proto.dataservice_pb2 import (
     DataResponse,
+    DeleteDatasetResponse,
     GetDataRequest,
     IngestDataRequest,
     IngestDataResponse,
@@ -53,7 +55,6 @@ class DataService(DataServiceServicer):
 
         Returns:
             IngestDataResponse: The response object indicating the success or failure of the ingestion.
-
         """
         self._log_ingest_data_command(request)
         response = IngestDataResponse()
@@ -88,7 +89,7 @@ class DataService(DataServiceServicer):
         """
         self._log_get_data_command(request)
         query = request.query if request.query else "SELECT * FROM data"
-        data = dataset.dataset(
+        data = dataset.dataset( # pylint: disable=unused-variable
             f"{self._datasets_dir}/{request.datasetId}.arrow", format="arrow"
         )
         logging.log(logging.INFO, "Loaded dataset")
@@ -98,6 +99,33 @@ class DataService(DataServiceServicer):
         for batch in table.to_batches(max_chunksize=1000):
             d = batch.to_pylist()
             yield DataResponse(body=json.dumps(d))
+
+    def DeleteDataset(self, request, context):
+        """
+        Deletes a dataset from the data service.
+
+        Args:
+            request (DeleteDatasetRequest): The request object containing the dataset ID.
+            context (ServicerContext): The context object for the gRPC service.
+
+        Returns:
+            DeleteDatasetResponse: The response object indicating the success or failure of the deletion.
+        """
+        response = DeleteDatasetResponse()
+        dataset_id = request.datasetId
+        path = f"{self._datasets_dir}/{dataset_id}.arrow"
+        if not os.path.exists(path):
+            response.success = True
+            return response
+        try:
+            os.remove(path)
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            logging.log(logging.ERROR, e)
+            response.success = False
+        else:
+            response.success = True
+
+        return response
 
     def _log_ingest_data_command(self, request: IngestDataRequest):
         """

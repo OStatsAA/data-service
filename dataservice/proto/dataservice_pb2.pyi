@@ -33,3 +33,15 @@ class DataResponse(_message.Message):
     BODY_FIELD_NUMBER: _ClassVar[int]
     body: str
     def __init__(self, body: _Optional[str] = ...) -> None: ...
+
+class DeleteDatasetRequest(_message.Message):
+    __slots__ = ("datasetId",)
+    DATASETID_FIELD_NUMBER: _ClassVar[int]
+    datasetId: str
+    def __init__(self, datasetId: _Optional[str] = ...) -> None: ...
+
+class DeleteDatasetResponse(_message.Message):
+    __slots__ = ("success",)
+    SUCCESS_FIELD_NUMBER: _ClassVar[int]
+    success: bool
+    def __init__(self, success: bool = ...) -> None: ...
