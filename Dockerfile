@@ -25,7 +25,7 @@ COPY tests ./tests
 RUN poetry run pytest
 
 # The runtime image, used to just run the code provided its virtual environment
-FROM python:3.11-slim-bookworm as runtime
+FROM python:3.12-slim-bookworm as runtime
 
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
@@ -34,4 +34,5 @@ COPY --from=build ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 COPY dataservice ./dataservice
 
-ENTRYPOINT ["python", "-m", "dataservice.server"]
+RUN python /app/.venv/bin/activate_this.py
+ENTRYPOINT ["/app/.venv/bin/python", "-m", "dataservice.server"]
