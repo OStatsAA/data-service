@@ -25,7 +25,7 @@ grpcio-tools = "^1.60.0"
 [tool.poetry.group.test.dependencies]
 pytest = "^8.0.2"
 grpcio-testing = "^1.60.0"
-pytest-asyncio = "^0.23.7"
+pytest-asyncio = "^0.25.3"
 coverage = "^7.4.3"
 
 [build-system]
